@@ -16,8 +16,6 @@ const Navbar = () => {
             <li className="nav-items nav-item-logo" title='Explore'><i class="fa-regular fa-compass"></i></li>
             <li className="nav-items nav-item-logo" title='Saved'><i class="fa-regular fa-bookmark"></i></li>
             <li className="nav-items nav-item-logo" title='Saved'><i class="bx bx-moon"></i></li>
-            <li className="nav-items">Contact</li>
-            <li className="nav-items">About</li>
 
         </ul>
       </nav>
