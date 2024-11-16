@@ -1,4 +1,5 @@
 import React from 'react'
+import FeaturedSection from './FeaturedSection';
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
         <button type="button" className="main-btn">Explore</button>
         </div>
       </div>
+      <FeaturedSection/>
     </div>
   )
 }
