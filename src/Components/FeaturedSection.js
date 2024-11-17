@@ -1,62 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
 
 const FeaturedSection = () => {
   const [apod, setApod] = useState(null);
   const [marsPhotos, setMarsPhotos] = useState([]);
   const [asteroidFact, setAsteroidFact] = useState(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [totalPhotos, setTotalPhotos] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const apiKey = process.env.REACT_APP_NASA_API_KEY; // Get API key from the environment variable
+  const apiKey = process.env.REACT_APP_NASA_API_KEY;
+  const photosPerPage = 4;
 
-  // Fetch APOD (Astronomy Picture of the Day)
+  // Fetch Astronomy Picture of the Day (APOD)
   const fetchAPOD = async () => {
     try {
-      const response = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
+      const response = await axios.get(
+        `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`
+      );
       setApod(response.data);
     } catch (error) {
       console.error("Error fetching APOD:", error);
     }
   };
 
-  // Fetch Mars Rover Photos (Perseverance Rover photos)
-  const fetchMarsPhotos = async () => {
+  // Fetch Mars Rover Photos
+  const fetchMarsPhotos = async (page) => {
     try {
-      const response = await axios.get(`https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/photos?sol=1000&api_key=${apiKey}`);
+      setLoading(true);
+      const sol = 1000;
+      const response = await axios.get(
+        `https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/photos?sol=${sol}&page=${page + 1}&api_key=${apiKey}`
+      );
       setMarsPhotos(response.data.photos || []);
+      setTotalPhotos(response.data.photos.length);
     } catch (error) {
       console.error("Error fetching Mars photos:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch Asteroid Facts (Near-Earth Objects data)
+  // Fetch Asteroid Facts
   const fetchAsteroidFact = async () => {
     try {
-      const response = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?api_key=${apiKey}`);
+      const response = await axios.get(
+        `https://api.nasa.gov/neo/rest/v1/feed?api_key=${apiKey}`
+      );
       setAsteroidFact(response.data);
     } catch (error) {
       console.error("Error fetching asteroid data:", error);
     }
   };
 
-  // UseEffect to fetch the data when the component mounts
+  // Fetch data on mount and page change
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true when fetching starts
+      setLoading(true);
       await fetchAPOD();
-      await fetchMarsPhotos();
+      await fetchMarsPhotos(currentPage);
       await fetchAsteroidFact();
-      setLoading(false); // Set loading to false once all data is fetched
+      setLoading(false);
     };
     fetchData();
-  }, [apiKey]); // Make sure the effect is triggered when the apiKey changes
+  }, [currentPage, apiKey]);
+
+  // Handle pagination page change
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
+  // Photos to display for the current page
+  const displayPhotos = marsPhotos.slice(
+    currentPage * photosPerPage,
+    currentPage * photosPerPage + photosPerPage
+  );
 
   return (
     <div className="featured-section">
-      {/* Show loading indicator if data is being fetched */}
       {loading && <p>Loading...</p>}
 
-      {/* APOD: Astronomy Picture of the Day */}
+      {/* Astronomy Picture of the Day */}
       {apod && (
         <div className="apod">
           <h2>Astronomy Picture of the Day</h2>
@@ -66,34 +91,50 @@ const FeaturedSection = () => {
         </div>
       )}
 
-      {/* Mars Rover Photos */}
+      {/* Mars Rover Photos with Pagination */}
       {marsPhotos.length > 0 && (
         <div className="mars-photos">
           <h2>Mars Rover Photos</h2>
           <div className="carousel">
-            {marsPhotos.slice(0, 5).map((photo) => (
-              <img key={photo.id} src={photo.img_src} alt="Mars Rover" />
+            {displayPhotos.map((photo) => (
+              <div key={photo.id} className="photo-card">
+                <img src={photo.img_src} alt="Mars Rover" />
+              </div>
             ))}
           </div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(totalPhotos / photosPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </div>
       )}
 
-      {/* Fun Space Facts or Asteroids Nearby */}
+      {/* Asteroid Facts */}
+
       {asteroidFact && asteroidFact.near_earth_objects && (
         <div className="asteroid-fact">
           <h2>Asteroids Nearby</h2>
           <p>Check out the nearest asteroid to Earth!</p>
-          {Object.values(asteroidFact.near_earth_objects).flat().map((asteroid) => (
-            <div key={asteroid.id} className="asteroid-details">
-              <h3>{asteroid.name}</h3>
-              <p><strong>Estimated Diameter:</strong> {asteroid.estimated_diameter.kilometers.estimated_diameter_min} - {asteroid.estimated_diameter.kilometers.estimated_diameter_max} km</p>
-              <p><strong>Close Approach Date:</strong> {asteroid.close_approach_data[0]?.close_approach_date_full}</p>
-              <p><strong>Miss Distance:</strong> {asteroid.close_approach_data[0]?.miss_distance.kilometers} km</p>
-              <p><strong>Velocity:</strong> {asteroid.close_approach_data[0]?.relative_velocity.kilometers_per_hour} km/h</p>
-              <p><strong>Is Potentially Hazardous:</strong> {asteroid.is_potentially_hazardous_asteroid ? 'Yes' : 'No'}</p>
-              <a href={asteroid.nasa_jpl_url} target="_blank" rel="noopener noreferrer">More Info</a>
-            </div>
-          ))}
+          <div className="astroid-contain">
+            {Object.values(asteroidFact.near_earth_objects).flat().map((asteroid) => (
+              <div key={asteroid.id} className="asteroid-details">
+                <h3 className='ast-heading'>{asteroid.name}</h3>
+                <p className='ast-dia'><strong>Estimated Diameter:</strong> {asteroid.estimated_diameter.kilometers.estimated_diameter_min} - {asteroid.estimated_diameter.kilometers.estimated_diameter_max} km</p>
+                <p className='ast-dia'><strong>Close Approach Date:</strong> {asteroid.close_approach_data[0]?.close_approach_date_full}</p>
+                <p className='ast-dia'><strong>Miss Distance:</strong> {asteroid.close_approach_data[0]?.miss_distance.kilometers} km</p>
+                <p className='ast-dia'><strong>Velocity:</strong> {asteroid.close_approach_data[0]?.relative_velocity.kilometers_per_hour} km/h</p>
+                <p className='ast-dia'><strong>Is Potentially Hazardous:</strong> {asteroid.is_potentially_hazardous_asteroid ? 'Yes' : 'No'}</p>
+                <a href={asteroid.nasa_jpl_url} className='ast-btn' target="_blank" rel="noopener noreferrer">More Info</a>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

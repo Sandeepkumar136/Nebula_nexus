@@ -14,7 +14,6 @@ const Navbar = () => {
             <li className="nav-items nav-item-logo" title='Search'><i class='bx bx-search-alt' ></i></li>
             <li className="nav-items nav-item-logo" title='Categories'><i class='bx bx-category-alt' ></i></li>
             <li className="nav-items nav-item-logo" title='Explore'><i class="fa-regular fa-compass"></i></li>
-            <li className="nav-items nav-item-logo" title='Saved'><i class="fa-regular fa-bookmark"></i></li>
             <li className="nav-items nav-item-logo" title='Saved'><i class="bx bx-moon"></i></li>
 
         </ul>
