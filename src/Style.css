@@ -83,7 +83,6 @@
 .section-home {
   display: flex;
   justify-content: space-between;
-  background-color: rgba(234, 234, 234, 0.8745098039);
 }
 
 .index-text-section {
