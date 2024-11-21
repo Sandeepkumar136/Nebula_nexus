@@ -1,21 +1,28 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
+import Loader from "./Loader";
 
 const Neo = () => {
   const [neObjects, setneObjects] = useState(null);
   const apiKey = process.env.REACT_APP_NASA_API_KEY;
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
+  const [loading, setLoading]= useState(true);
+
+  
 
   const fetchNeoData = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `https://api.nasa.gov/neo/rest/v1/feed?api_key=${apiKey}`
       );
       setneObjects(response.data);
     } catch (error) {
       console.error("Error fetching NEO data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -23,9 +30,7 @@ const Neo = () => {
     fetchNeoData();
   }, []);
 
-  if (!neObjects || !neObjects.near_earth_objects) {
-    return <div>Loading...</div>;
-  }
+  if(loading) return <Loader loading={loading}/>
 
   // Flatten the near_earth_objects into a single array
   const neoArray = Object.values(neObjects.near_earth_objects).flat();

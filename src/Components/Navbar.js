@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import DialogueBox from "./Dialog/DialogueBox";
+import DialogueContents from "./Dialog/DialogueContents";
 
 const Navbar = () => {
   // Dark Mode
@@ -6,6 +8,11 @@ const Navbar = () => {
     const savedTheme = localStorage.getItem("darkmode");
     return savedTheme === "true";
   });
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => setDialogOpen(true);
+  const handleCloseDialog = () => setDialogOpen(false);
 
   const screenModeToggle = () => {
     setDarkMode((prevMode) => {
@@ -29,23 +36,21 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll=()=>{
-      if(window.scrollY>50){
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
         setIsScrolled(true);
-      }else{
+      } else {
         setIsScrolled(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return ()=> window.removeEventListener('scroll', handleScroll);
-
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
 
   return (
     <div>
-      <nav className={`nav ${isScrolled ? 'scrolled': ''}`}>
+      <nav className={`nav ${isScrolled ? "scrolled" : ""}`}>
         <div className="nav-toggle">
           <div className="logo">
             <span className="logo-title">Nebula Nexus</span>
@@ -53,7 +58,11 @@ const Navbar = () => {
           <i id="toggle-btn" className="bx bx-chevron-right"></i>
         </div>
         <ul className="nav-list">
-          <li className="nav-items nav-item-logo" title="Search">
+          <li
+            className="nav-items nav-item-logo"
+            onClick={handleOpenDialog}
+            title="Search"
+          >
             <i className="bx bx-search-alt"></i>
           </li>
           <li className="nav-items nav-item-logo" title="Categories">
@@ -75,6 +84,10 @@ const Navbar = () => {
           </li>
         </ul>
       </nav>
+
+      <DialogueBox isOpen={isDialogOpen} onClose={handleCloseDialog}>
+        <DialogueContents />
+      </DialogueBox>
     </div>
   );
 };

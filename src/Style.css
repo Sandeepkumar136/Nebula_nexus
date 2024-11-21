@@ -30,8 +30,7 @@
 }
 
 .nav.scrolled {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 16px;
+  background: rgba(14, 86, 255, 0.36);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5.5px);
   -webkit-backdrop-filter: blur(5.5px);
@@ -105,6 +104,7 @@
 .section-home {
   display: flex;
   justify-content: space-between;
+  margin-top: 4rem;
 }
 
 .index-text-section {
@@ -346,4 +346,53 @@
 
 .ast-span {
   margin-left: 3px;
+}
+
+/* Backdrop Animations */
+.dialogue-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+
+.dialogue-backdrop.fade-in {
+  opacity: 1;
+}
+
+.dialogue-backdrop.fade-out {
+  opacity: 0;
+}
+
+/* Dialogue Box Animations */
+.dialogue-box {
+  background: rgba(255, 255, 255, 0.327);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3.8px);
+  -webkit-backdrop-filter: blur(3.8px);
+  max-width: 400px;
+  height: 300px;
+  width: 100%;
+  padding: 20px;
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+
+.dialogue-box.slide-in {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.dialogue-box.slide-out {
+  transform: translateY(-20px);
+  opacity: 0;
 }/*# sourceMappingURL=Style.css.map */
