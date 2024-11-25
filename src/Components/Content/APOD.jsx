@@ -37,7 +37,7 @@ const APOD = () => {
     <div className="apod-contain">
       {
         apod.media_type === 'image' ? (
-          <img src={apod.url} className="apod-img" alt={apod.title} />
+          <img src={apod.url} className="apod-iframe" alt={apod.title} />
         ): (
           <iframe src={apod.url} frameborder="0" title={apod.title} allowFullScreen className="apod-iframe"></iframe>
         )
@@ -47,8 +47,8 @@ const APOD = () => {
       <p className="apod-desc">{apod.explanation}</p>
     </div>
     <div className="apod-date-contain">
-      <h3 className="date-desc">Select a Date ofr APOD:</h3>
-      <DatePicker selected={selectedDate} onChange={(date)=> setSelectedDate(date)} dateFormat="yyyy/MM/dd" maxDate={new Date()} />
+      <h3 className="date-desc">Select a Date for APOD:</h3>
+      <DatePicker className="datepicker" selected={selectedDate} onChange={(date)=> setSelectedDate(date)} dateFormat="yyyy/MM/dd" maxDate={new Date()} />
     </div>
     </>
   )

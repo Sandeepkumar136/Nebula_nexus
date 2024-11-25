@@ -667,4 +667,38 @@ body {
     width: 100%;
     padding: 0.5rem;
   }
+}
+.apod-date-contain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.datepicker {
+  border: none;
+  outline: none;
+  background-color: #007bff;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  padding: 8px 10px;
+  font-size: 1rem;
+  color: #f9f9f9;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+@media only screen and (max-width: 425px) {
+  .date-desc {
+    font-weight: 400;
+    text-wrap: nowrap;
+    font-size: 1.1rem;
+    text-align: center;
+  }
 }/*# sourceMappingURL=Style.css.map */
